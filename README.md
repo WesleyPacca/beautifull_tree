@@ -19,3 +19,5 @@ beautifull_tree [-Path <string>] [-Folders] [-IgnoreCache] [-IgnoreDirectories <
 
 -Help:
     Exibe esta mensagem de ajuda.
+
+![image](https://github.com/WesleyPacca/beautifull_tree/assets/146728038/dab62c38-25b9-4491-88b5-79575889e66b)
