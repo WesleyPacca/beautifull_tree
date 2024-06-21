@@ -2,9 +2,8 @@
 param (
     [string]$Path = (Get-Location),
     [switch]$Folders,
-    [switch]$IgnoreCache = $true,
+    [bool]$IgnoreCache = $true,
     [string[]]$IgnoreDirectories = @(),
-    [string]$FindDirectory,
     [switch]$Help
 )
 
@@ -13,9 +12,8 @@ function beautifull_tree {
     param (
         [string]$Path = (Get-Location),
         [switch]$Folders,
-        [switch]$IgnoreCache = $true,
+        [bool]$IgnoreCache = $true,
         [string[]]$IgnoreDirectories = @(),
-        [string]$FindDirectory,
         [switch]$Help
     )
 
@@ -30,13 +28,10 @@ beautifull_tree [-Path <string>] [-Folders] [-IgnoreCache] [-IgnoreDirectories <
     Lista apenas diretórios. Se este parâmetro for fornecido, os arquivos não serão listados.
 
 -IgnoreCache:
-    Ignora diretórios que contenham 'cache' no nome. O valor padrão é true.
+    Ignora diretórios que contenham 'cache' no nome. O valor padrão é true. (Utilize $ antes do true ou false)
 
 -IgnoreDirectories <string[]>:
     Uma lista de nomes de diretórios a serem ignorados. Exemplo: @("node_modules", "dist").
-
--FindDirectory <string>:
-    Procura por uma pasta específica dentro da estrutura de diretórios e exibe apenas essa pasta e seu conteúdo.
 
 -Help:
     Exibe esta mensagem de ajuda.
@@ -61,32 +56,21 @@ beautifull_tree [-Path <string>] [-Folders] [-IgnoreCache] [-IgnoreDirectories <
                 if ($IgnoreDirectories -contains $_.Name) {
                     return
                 }
-                if ($FindDirectory -and $_.Name -eq $FindDirectory) {
-                    Write-Output "$indent├───$($_.Name)"
-                    Get-Tree -SubPath $_.FullName -Level ($Level + 1)
-                    return
-                }
-                if (-not $FindDirectory) {
-                    Write-Output "$indent├───$($_.Name)"
-                    Get-Tree -SubPath $_.FullName -Level ($Level + 1)
-                }
+                Write-Output "$indent├───$($_.Name)"
+                Get-Tree -SubPath $_.FullName -Level ($Level + 1)
             } elseif (-not $Folders) {
                 Write-Output "$indent├───$($_.Name)"
             }
         }
     }
 
-    # Mostrar o nome do diretório atual se FindDirectory não for especificado
-    if (-not $FindDirectory) {
-        $currentDirName = Split-Path -Path $Path -Leaf
-        Write-Output "${currentDirName}:"
-    }
+    # Mostrar o nome do diretório atual
+    $currentDirName = Split-Path -Path $Path -Leaf
+    Write-Output "${currentDirName}:"
 
     # Mostrar a estrutura do diretório
     Get-Tree -SubPath $Path
 }
-
-
 
 # Executar a função com os parâmetros capturados
 beautifull_tree -Path $Path -Folders:$Folders -IgnoreCache:$IgnoreCache -IgnoreDirectories $IgnoreDirectories -FindDirectory $FindDirectory -Help:$Help
